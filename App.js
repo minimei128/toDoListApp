@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   FlatList,
   TextInput,
+  Button,
   TouchableOpacity } from 'react-native';
 
   import {Item} from './components/Item';
@@ -32,7 +33,9 @@ export default class App extends Component {
              <TextInput
                 style={styles.input}
                 placeholder="Enter a task"
-                onChangeText={ text => this.setState({taskName: text})}
+                onChangeText={ text => this.setState({taskName: text},
+                () => {this.validate()}
+                )}
                 ref={(input) => (this._textInput = input)}
             />
         </View>
@@ -40,7 +43,12 @@ export default class App extends Component {
 
         {/* start --- add button container */}
         <View>
-            <TouchableOpacity style={styles.button} onPress={this.addItem}>
+            <TouchableOpacity 
+            // Disabled add button until there's an input
+            style={this.state.validInput ? styles.button : styles.buttonDisabled} 
+            onPress={this.addItem}
+            disabled = {!this.state.validInput ? true : false}
+            >
             <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
         </View>
@@ -63,6 +71,7 @@ export default class App extends Component {
     <Item task={item.task} />
   )
 
+  //add input task to list clicking add button using this function
   addItem = () => {
     // check if the text input is empty
     if(this.state.taskName == '') {
@@ -74,16 +83,25 @@ export default class App extends Component {
         task: this.state.taskName
       }
       this.listData.push(listItem)
-      this.setState({expenseCategory: null})
+      this.setState({taskName: null, validInput: false})
       console.log('adding')
       this._textInput.clear()
       this._textInput.focus()
     }
 
+    //validate the input to activate the disabled button function
+    validate = () => {
+      if( this.state.taskName ){
+        this.setState({validInput:true})
+      }
+    }
+
+
   }
 
 const colors = {
-      primary : 'hsla(330,38%,65%,1)'
+      primary : 'hsla(330,38%,65%,1)',
+      primaryDisabled: 'hsla(330,38%,80%,1)'
     }
 
 const styles = StyleSheet.create({
@@ -104,5 +122,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     textAlign: 'center'
+  },
+  buttonDisabled:{
+    padding: 15,
+    backgroundColor: colors.primaryDisabled
   }
 })
