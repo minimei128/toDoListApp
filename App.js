@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   FlatList,
   TextInput,
-  Button,
   TouchableOpacity } from 'react-native';
 
   import {Item} from './components/Item';
@@ -15,9 +14,7 @@ import {
 export default class App extends Component {
 
   state = {
-    expenseAmount : 0,
-    expenseCategory: '',
-    updating: false,
+    taskName: '',
   }
 
   listData = []
@@ -31,17 +28,12 @@ export default class App extends Component {
               
               <Text>To Do List</Text>
               
-               {/* section: enter/input amount on app */}
-              <TextInput
-                style={styles.input}
-                placeholder= "$ amount"
-                onChangeText={ text => this.setState({expenseAmount: parseFloat(text) }) }
-                keyboardType="number-pad" />
               {/* section: enter/input category on app */}
              <TextInput
                 style={styles.input}
-                placeholder="category"
-                onChangeText={ text => this.setState({expenseCategory: text})}
+                placeholder="Enter a task"
+                onChangeText={ text => this.setState({taskName: text})}
+                ref={(input) => (this._textInput = input)}
             />
         </View>
         {/* end --- text input container */}
@@ -59,7 +51,6 @@ export default class App extends Component {
           data={this.listData}
           renderItem={this.renderList}
           keyExtractor={ item => item.id} 
-          extraData = {this.state.expenseAmount}
           />
 
       </SafeAreaView>
@@ -69,27 +60,26 @@ export default class App extends Component {
 
 
   renderList = ({item}) => (
-    <Item amount={item.amount} category={item.category} />
+    <Item task={item.task} />
   )
 
   addItem = () => {
-    if(
-      isNaN(this.state.expenseAmount) ||
-      this.state.expenseAmount == 0 ||
-      this.state.expenseCategory == '') {
+    // check if the text input is empty
+    if(this.state.taskName == '') {
         return;
       }
       let itemId = new Date().getTime().toString()
       let listItem = {
         id: itemId,
-        amount: this.state.expenseAmount,
-        category: this.state.expenseCategory
+        task: this.state.taskName
       }
       this.listData.push(listItem)
+      this.setState({expenseCategory: null})
       console.log('adding')
-      //this.setState({updating: true})
-      this.setState({expenseAmount:0})
+      this._textInput.clear()
+      this._textInput.focus()
     }
+
   }
 
 const colors = {
