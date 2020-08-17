@@ -16,18 +16,21 @@ export default class App extends Component {
 
   state = {
     taskName: '',
+    
   }
 
   listData = []
 
   render() {
+
     return (
 // start --- main app container 
-      <SafeAreaView>
+      <SafeAreaView style={{flex:1}}>
+        <View style = {styles.header}>
+          <Text style = {styles.title} >To Do List</Text>
+        </View>
           {/* start --- text input container */}
           <View style = {styles.main}>
-              
-              <Text>To Do List</Text>
               
               {/* section: enter/input category on app */}
              <TextInput
@@ -53,14 +56,19 @@ export default class App extends Component {
             </TouchableOpacity>
         </View>
         {/* end --- add button container */}
-
+        
+        <View style={{flex:1}}>
         {/* User input item display in a list */}
+        
         <FlatList
+          
           data={this.listData}
           renderItem={this.renderList}
           keyExtractor={ item => item.id} 
           />
-
+          </View>
+        
+        
       </SafeAreaView>
       // end --- main app container 
     )
@@ -68,7 +76,10 @@ export default class App extends Component {
 
 
   renderList = ({item}) => (
+    <TouchableOpacity 
+    onPress={this.deleteItemById}>
     <Item task={item.task} />
+    </TouchableOpacity>
   )
 
   //add input task to list clicking add button using this function
@@ -83,6 +94,8 @@ export default class App extends Component {
         task: this.state.taskName
       }
       this.listData.push(listItem)
+      //sort list in descending order
+      this.sortList()
       this.setState({taskName: null, validInput: false})
       console.log('adding')
       this._textInput.clear()
@@ -96,28 +109,50 @@ export default class App extends Component {
       }
     }
 
+    //when input task it gets sorted to the top of list
+    sortList = () => {
+      //sort list by comparing two item in array to know which one is more recent
+      this.listData.sort( (item1,item2)=> {
+        return item2.id - item1.id
+      })
+    }
+
+    // Making each render item dynamic to click
+    deleteItemById = () => {
+      
+      console.log("delete");
+    }
 
   }
 
 const colors = {
-      primary : 'hsla(330,38%,65%,1)',
-      primaryDisabled: 'hsla(330,38%,80%,1)'
+      primary : 'orange',
+      primaryDisabled: 'orange'
     }
 
 const styles = StyleSheet.create({
+  header:{
+    backgroundColor: '#87cefa',
+    paddingTop: 20
+  },
+  title: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: "center"
+  },
   main: {
     paddingHorizontal: 10,
+    backgroundColor: '#87cefa'
   },
   input: {
     width: '100%',
     padding: 10,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginVertical: 15
+    marginVertical: 15,
+    backgroundColor: 'white'
   },
   button: {
     padding: 15,
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
   },
   buttonText: {
     color: 'white',
@@ -126,5 +161,5 @@ const styles = StyleSheet.create({
   buttonDisabled:{
     padding: 15,
     backgroundColor: colors.primaryDisabled
-  }
+  },
 })

@@ -2,7 +2,8 @@ import React from 'react';
 import { 
     Text, 
     View, 
-    StyleSheet } from 'react-native';
+    StyleSheet, 
+    TouchableOpacity} from 'react-native';
 
 export const Item = (props) => {
     return(
@@ -18,7 +19,10 @@ const itemStyles = StyleSheet.create({
         padding: 10,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        borderStyle: 'solid',
+        borderBottomWidth: 1,
+        borderColor: '#dcdcdc'
+    
     },
     text: {
         fontSize:16,
