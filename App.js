@@ -76,10 +76,8 @@ export default class App extends Component {
 
 
   renderList = ({item}) => (
-    <TouchableOpacity 
-    onPress={this.deleteItemById}>
     <Item task={item.task} />
-    </TouchableOpacity>
+    
   )
 
   //add input task to list clicking add button using this function
