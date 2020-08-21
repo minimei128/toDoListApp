@@ -78,9 +78,14 @@ export default class App extends Component {
   renderList = ({item}) => (
     <Item task={item.task} 
     id={item.id}
-    delete={this.deleteItemById}/>
+    delete={this.deleteItemById}
+    buttonPressed={this.checkItemOff}/>
     
   )
+
+  checkItemOff = () =>{
+      console.log('Task completed');
+  }
 
   //add input task to list clicking add button using this function
   addItem = () => {

@@ -4,13 +4,16 @@ import {
     View, 
     StyleSheet, 
     TouchableOpacity,
-    Image} from 'react-native';
+    Image,
+    TouchableHighlight} from 'react-native';
 
 export const Item = (props) => {
     return(
         //render each item on the list
+    <TouchableHighlight 
+    activeOpacity={0.6} 
+    underlayColor="#DDDDDD">
         <View style = {itemStyles.item}> 
-        
             <View style = {itemStyles.row}>
             <Text style={itemStyles.text}>{props.task}</Text>
             </View>
@@ -18,6 +21,7 @@ export const Item = (props) => {
                 <Image style ={itemStyles.icon}source={require('../assets/trash-alt-solid.png')}/>
             </TouchableOpacity>
         </View>
+    </TouchableHighlight>
     )
 }
 
