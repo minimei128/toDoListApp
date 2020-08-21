@@ -8,7 +8,8 @@ import {
   FlatList,
   TextInput,
   Button,
-  TouchableOpacity } from 'react-native';
+  TouchableOpacity,
+  AsyncStorage, } from 'react-native';
 
   import {Item} from './components/Item';
 
@@ -16,7 +17,8 @@ export default class App extends Component {
 
   state = {
     taskName: '',
-    
+    showToast: false,
+    message: '',
   }
 
   listData = []
@@ -25,7 +27,7 @@ export default class App extends Component {
 
     return (
 // start --- main app container 
-      <SafeAreaView style={{flex:1}}>
+      <SafeAreaView style={{flex:1, position: 'relative'}}>
         <View style = {styles.header}>
           <Text style = {styles.title} >To Do List</Text>
         </View>
@@ -56,7 +58,11 @@ export default class App extends Component {
             </TouchableOpacity>
         </View>
         {/* end --- add button container */}
-        
+        <View style={[{
+          display: this.state.showToast ? 'flex' : 'none'
+        }, styles.toast ]}>
+          <Text style={styles.toastMessage}>{this.state.message}</Text>
+        </View>
         <View style={{flex:1}}>
         {/* User input item display in a list */}
         
@@ -74,6 +80,9 @@ export default class App extends Component {
     )
   }
 
+  componentDidMount() {
+    this.loadList()
+  }
 
   renderList = ({item}) => (
     <Item task={item.task} 
@@ -101,10 +110,11 @@ export default class App extends Component {
       this.listData.push(listItem)
       //sort list in descending order
       this.sortList()
+      this.saveList()
       this.setState({taskName: null, validInput: false})
-      console.log('adding')
       this._textInput.clear()
       this._textInput.focus()
+      this.showToast('item added', 1500)
     }
 
     //validate the input to activate the disabled button function
@@ -133,12 +143,48 @@ export default class App extends Component {
 
         })
 
-        console.log('delete item')
+        this.showToast('item deleted', 2000)
+        this.saveList()
         this.setState({
             refresh: !this.state.refresh
         })
       
     }
+
+    saveList = async () => {
+        try {
+          await AsyncStorage.setItem(
+            'data',
+            JSON.stringify(this.listData)
+          )
+        }
+        catch( error ) {
+          console.log(error)
+        }
+      }
+    
+      loadList = async () => {
+        try{
+          let items = await AsyncStorage.getItem('data')
+          if( JSON.parse(items) ) {
+            this.listData = JSON.parse( items )
+          }
+          this.setState({expenseAmount:0})
+        }
+        catch(error) {
+          console.log(error)
+        }
+      }
+
+      showToast = ( message, duration ) => {
+        this.setState({message: message }, 
+          () => { this.setState({showToast: true}) }
+        )
+        const timer = setTimeout( 
+          () => { this.setState({showToast: false }) },
+          duration 
+        )
+      }
 
   }
 
