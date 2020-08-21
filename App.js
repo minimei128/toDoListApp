@@ -76,7 +76,9 @@ export default class App extends Component {
 
 
   renderList = ({item}) => (
-    <Item task={item.task} />
+    <Item task={item.task} 
+    id={item.id}
+    delete={this.deleteItemById}/>
     
   )
 
@@ -116,9 +118,21 @@ export default class App extends Component {
     }
 
     // Making each render item dynamic to click
-    deleteItemById = () => {
+    deleteItemById = (itemId) => {
       
-      console.log("delete");
+        this.listData.forEach((item, index) => {
+            if (item.id == itemId) {
+                //to remove a single item starting at index
+                this.listData.splice(index, 1)
+            }
+
+        })
+
+        console.log('delete item')
+        this.setState({
+            refresh: !this.state.refresh
+        })
+      
     }
 
   }
