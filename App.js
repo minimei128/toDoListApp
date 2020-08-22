@@ -58,12 +58,15 @@ export default class App extends Component {
             </TouchableOpacity>
         </View>
         {/* end --- add button container */}
+        
+        {/* status bar at the bottom screen tells user their action they selected */}
         <View style={[{
           display: this.state.showToast ? 'flex' : 'none'
         }, styles.toast ]}>
           <Text style={styles.toastMessage}>{this.state.message}</Text>
         </View>
         <View style={{flex:1}}>
+
         {/* User input item display in a list */}
         
         <FlatList
@@ -71,6 +74,7 @@ export default class App extends Component {
           data={this.listData}
           renderItem={this.renderList}
           keyExtractor={ item => item.id} 
+          extraData={this.state.taskName}
           />
           </View>
         
@@ -88,12 +92,19 @@ export default class App extends Component {
     <Item task={item.task} 
     id={item.id}
     delete={this.deleteItemById}
-    buttonPressed={this.checkItemOff}/>
-    
+    buttonPressed={this.checkItemOff}
+    status = {item.status}
+    />
   )
 
-  checkItemOff = () =>{
-      console.log('Task completed');
+  checkItemOff = ( itemId ) =>{
+      this.listData.forEach( (item) => {
+        if( item.id == itemId ) {
+          item.status = true
+        }
+      } )
+      this.saveList()
+      this.setState({taskName: null})
   }
 
   //add input task to list clicking add button using this function
@@ -105,7 +116,8 @@ export default class App extends Component {
       let itemId = new Date().getTime().toString()
       let listItem = {
         id: itemId,
-        task: this.state.taskName
+        task: this.state.taskName,
+        status: false,
       }
       this.listData.push(listItem)
       //sort list in descending order
@@ -205,7 +217,7 @@ const styles = StyleSheet.create({
   },
   main: {
     paddingHorizontal: 10,
-    backgroundColor: '#87cefa'
+    backgroundColor: '#87cefa',
   },
   input: {
     width: '100%',
@@ -225,4 +237,18 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: colors.primaryDisabled
   },
+  toast: {
+    position: 'absolute',
+    bottom: 10,
+    left: 30,
+    right: -30,
+    zIndex: 999,
+    backgroundColor: 'black',
+    padding: 5,
+    borderRadius: 5,
+  },
+  toastMessage: {
+    color: 'white',
+    textAlign: 'center'
+  }
 })
