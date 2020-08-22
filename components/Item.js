@@ -11,7 +11,7 @@ export const Item = (props) => {
     return(
         //render each item on the list
     <TouchableHighlight  
-    underlayColor="green">
+    underlayColor="orange">
         <View style = { props.status ? itemStyles.itemDone : itemStyles.item }> 
             <View style = {itemStyles.row}>
             <Text style={ props.status ? itemStyles.textDone : itemStyles.text }>{props.task}</Text>
@@ -45,8 +45,8 @@ const itemStyles = StyleSheet.create({
         flexDirection: 'row',
         borderStyle: 'solid',
         borderBottomWidth: 1,
-        borderColor: '#dcdcdc',
-        backgroundColor:'green'
+        borderColor: 'orange',
+        backgroundColor:'#FED8B1'
     },
     text: {
         fontSize:16,

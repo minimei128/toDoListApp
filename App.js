@@ -103,6 +103,7 @@ export default class App extends Component {
           item.status = true
         }
       } )
+      this.showToast('Task Done', 1500)
       this.saveList()
       this.setState({taskName: null})
   }
@@ -126,7 +127,7 @@ export default class App extends Component {
       this.setState({taskName: null, validInput: false})
       this._textInput.clear()
       this._textInput.focus()
-      this.showToast('item added', 1500)
+      this.showToast('Task Added', 1500)
     }
 
     //validate the input to activate the disabled button function
@@ -155,7 +156,7 @@ export default class App extends Component {
 
         })
 
-        this.showToast('item deleted', 2000)
+        this.showToast('Task Deleted', 2000)
         this.saveList()
         this.setState({
             refresh: !this.state.refresh
@@ -250,5 +251,8 @@ const styles = StyleSheet.create({
   toastMessage: {
     color: 'white',
     textAlign: 'center'
+  },
+  buttonArea: {
+      paddingBottom:100,
   }
 })
